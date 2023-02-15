@@ -7,7 +7,7 @@ use libs::rayon::prelude::*;
 
 /// Sort by the field picked by the function.
 /// The pages permalinks are used to break the ties
-pub fn sort_pages(pages: &[&Page], sort_by: SortBy) -> (Vec<PathBuf>, Vec<PathBuf>) {
+pub fn sort_pages(pages: &[&Page], sort_by: SortBy, sort_desc: bool) -> (Vec<PathBuf>, Vec<PathBuf>) {
     let (mut can_be_sorted, cannot_be_sorted): (Vec<&Page>, Vec<_>) =
         pages.par_iter().partition(|page| match sort_by {
             SortBy::Date => page.meta.datetime.is_some(),
@@ -37,7 +37,13 @@ pub fn sort_pages(pages: &[&Page], sort_by: SortBy) -> (Vec<PathBuf>, Vec<PathBu
 
         if ord == Ordering::Equal {
             a.permalink.cmp(&b.permalink)
-        } else {
+        } else if sort_desc {
+            match ord {
+                Ordering::Greater => Ordering::Less,
+                Ordering::Less => Ordering::Greater,
+                Ordering::Equal => Ordering::Equal
+            }
+         } else {
             ord
         }
     });
@@ -78,7 +84,7 @@ mod tests {
         let page1 = create_page_with_date("2018-01-01", None);
         let page2 = create_page_with_date("2017-01-01", None);
         let page3 = create_page_with_date("2019-01-01", None);
-        let (pages, ignored_pages) = sort_pages(&[&page1, &page2, &page3], SortBy::Date);
+        let (pages, ignored_pages) = sort_pages(&[&page1, &page2, &page3], SortBy::Date, false);
         assert_eq!(pages[0], page3.file.path);
         assert_eq!(pages[1], page1.file.path);
         assert_eq!(pages[2], page2.file.path);
@@ -90,7 +96,7 @@ mod tests {
         let page1 = create_page_with_date("2018-01-01", None);
         let page2 = create_page_with_date("2017-01-01", Some("2022-02-01"));
         let page3 = create_page_with_date("2019-01-01", None);
-        let (pages, ignored_pages) = sort_pages(&[&page1, &page2, &page3], SortBy::UpdateDate);
+        let (pages, ignored_pages) = sort_pages(&[&page1, &page2, &page3], SortBy::UpdateDate, false);
         assert_eq!(pages[0], page2.file.path);
         assert_eq!(pages[1], page3.file.path);
         assert_eq!(pages[2], page1.file.path);
@@ -102,7 +108,7 @@ mod tests {
         let page1 = create_page_with_weight(2);
         let page2 = create_page_with_weight(3);
         let page3 = create_page_with_weight(1);
-        let (pages, ignored_pages) = sort_pages(&[&page1, &page2, &page3], SortBy::Weight);
+        let (pages, ignored_pages) = sort_pages(&[&page1, &page2, &page3], SortBy::Weight, false);
         // Should be sorted by weight
         assert_eq!(pages[0], page3.file.path);
         assert_eq!(pages[1], page1.file.path);
@@ -128,7 +134,7 @@ mod tests {
         ];
         let pages: Vec<Page> = titles.iter().map(|title| create_page_with_title(title)).collect();
         let (sorted_pages, ignored_pages) =
-            sort_pages(&pages.iter().collect::<Vec<_>>(), SortBy::Title);
+            sort_pages(&pages.iter().collect::<Vec<_>>(), SortBy::Title, false);
         // Should be sorted by title in lexical order
         let sorted_titles: Vec<_> = sorted_pages
             .iter()
@@ -156,7 +162,7 @@ mod tests {
         );
 
         let (sorted_pages, ignored_pages) =
-            sort_pages(&pages.iter().collect::<Vec<_>>(), SortBy::TitleBytes);
+            sort_pages(&pages.iter().collect::<Vec<_>>(), SortBy::TitleBytes, false);
         // Should be sorted by title in bytes order
         let sorted_titles: Vec<_> = sorted_pages
             .iter()
@@ -189,7 +195,7 @@ mod tests {
     fn can_find_ignored_pages() {
         let page1 = create_page_with_date("2018-01-01", None);
         let page2 = create_page_with_weight(1);
-        let (pages, ignored_pages) = sort_pages(&[&page1, &page2], SortBy::Date);
+        let (pages, ignored_pages) = sort_pages(&[&page1, &page2], SortBy::Date, false);
         assert_eq!(pages[0], page1.file.path);
         assert_eq!(ignored_pages.len(), 1);
         assert_eq!(ignored_pages[0], page2.file.path);
