@@ -7,6 +7,7 @@ use crate::library::Library;
 use crate::{Page, Section};
 use libs::tera::{Map, Value};
 use utils::table_of_contents::Heading;
+use crate::front_matter::{PageFrontMatter, SectionFrontMatter};
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct BackLink<'a> {
@@ -70,6 +71,7 @@ pub struct SerializingPage<'a> {
     higher: Option<Box<SerializingPage<'a>>>,
     translations: Vec<TranslatedContent<'a>>,
     backlinks: Vec<BackLink<'a>>,
+    meta: &'a PageFrontMatter,
 }
 
 impl<'a> SerializingPage<'a> {
@@ -134,6 +136,7 @@ impl<'a> SerializingPage<'a> {
             higher,
             translations,
             backlinks,
+            meta: &page.meta,
         }
     }
 }
@@ -161,6 +164,7 @@ pub struct SerializingSection<'a> {
     translations: Vec<TranslatedContent<'a>>,
     backlinks: Vec<BackLink<'a>>,
     generate_feed: bool,
+    meta: &'a SectionFrontMatter,
 }
 
 #[derive(Debug)]
@@ -224,6 +228,7 @@ impl<'a> SerializingSection<'a> {
             subsections,
             translations,
             backlinks,
+            meta: &section.meta,
         }
     }
 }

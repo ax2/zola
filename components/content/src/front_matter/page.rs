@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use libs::tera::{Map, Value};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use time::format_description::well_known::Rfc3339;
 use time::macros::{format_description, time};
 use time::{Date, OffsetDateTime, PrimitiveDateTime};
@@ -12,7 +12,7 @@ use utils::de::{fix_toml_dates, from_toml_datetime};
 use crate::front_matter::split::RawFrontMatter;
 
 /// The front matter of every page
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(default)]
 pub struct PageFrontMatter {
     /// <title> of the page
@@ -23,7 +23,7 @@ pub struct PageFrontMatter {
     #[serde(default, deserialize_with = "from_toml_datetime")]
     pub updated: Option<String>,
     /// Datetime content was last updated
-    #[serde(default, skip_deserializing)]
+    #[serde(default, skip_deserializing, skip_serializing)]
     pub updated_datetime: Option<OffsetDateTime>,
     /// The converted update datetime into a (year, month, day) tuple
     #[serde(default, skip_deserializing)]
@@ -32,7 +32,7 @@ pub struct PageFrontMatter {
     #[serde(default, deserialize_with = "from_toml_datetime")]
     pub date: Option<String>,
     /// Datetime content was created
-    #[serde(default, skip_deserializing)]
+    #[serde(default, skip_deserializing, skip_serializing)]
     pub datetime: Option<OffsetDateTime>,
     /// The converted date into a (year, month, day) tuple
     #[serde(default, skip_deserializing)]

@@ -22,6 +22,7 @@ pub struct SerializedTaxonomyTerm<'a> {
     slug: &'a str,
     path: &'a str,
     permalink: &'a str,
+    weight: usize,
     pages: Vec<SerializingPage<'a>>,
     page_count: usize,
 }
@@ -41,6 +42,7 @@ impl<'a> SerializedTaxonomyTerm<'a> {
             slug: &item.slug,
             path: &item.path,
             permalink: &item.permalink,
+            weight: pages.len(),
             pages,
             page_count: item.pages.len(),
         }
