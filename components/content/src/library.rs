@@ -177,7 +177,7 @@ impl Library {
             let pages: Vec<_> = section.pages.iter().map(|p| &self.pages[p]).collect();
             let (sorted_pages, cannot_be_sorted_pages) = match section.meta.sort_by {
                 SortBy::None => continue,
-                _ => sort_pages(&pages, section.meta.sort_by, section.meta.sort_desc),
+                _ => sort_pages(&pages, section.meta.sort_by),
             };
 
             updates

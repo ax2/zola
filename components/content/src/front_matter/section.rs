@@ -21,9 +21,6 @@ pub struct SectionFrontMatter {
     /// Whether to sort by "date", "order", "weight" or "none". Defaults to `none`.
     #[serde(skip_serializing)]
     pub sort_by: SortBy,
-    /// Whether to change the sort_by ordering sequence to descending.
-    #[serde(skip_serializing)]
-    pub sort_desc: bool,    
     /// Used by the parent section to order its subsections.
     /// Higher values means it will be at the end. Defaults to `0`
     #[serde(skip_serializing)]
@@ -104,7 +101,6 @@ impl Default for SectionFrontMatter {
             title: None,
             description: None,
             sort_by: SortBy::None,
-            sort_desc: false,
             weight: 0,
             template: None,
             paginate_by: None,
