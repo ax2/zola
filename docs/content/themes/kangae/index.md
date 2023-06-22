@@ -3,16 +3,16 @@
 title = "kangae"
 description = "a lightweight microblog theme for zola"
 template = "theme.html"
-date = 2022-12-04T21:40:33+02:00
+date = 2023-05-23T19:14:01+00:00
 
 [extra]
-created = 2022-12-04T21:40:33+02:00
-updated = 2022-12-04T21:40:33+02:00
+created = 2023-05-23T19:14:01+00:00
+updated = 2023-05-23T19:14:01+00:00
 repository = "https://github.com/ayushnix/kangae.git"
 homepage = "https://github.com/ayushnix/kangae"
 minimum_version = "0.15.0"
 license = "NCSA"
-demo = ""
+demo = "https://kangae.ayushnix.com/"
 
 [extra.author]
 name = "Ayush Agarwal"
